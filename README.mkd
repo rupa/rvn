@@ -13,6 +13,7 @@ this file, but it can iself be executed with bash to recreate `file.[revision]`:
 
 ## installation
 
+    wget http://github.com/rupa/rvn/raw/master/rvn.rvn
     bash rvn.rvn rvn
     chmod +x rvn
 
