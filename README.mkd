@@ -11,6 +11,8 @@ executed with bash to recreate any revision of `file`:
 
     bash file.rvn outfile [revision]
 
+As this file is a simple shell script, it can be directly edited with care.
+
 ## installation
 
     wget http://github.com/rupa/rvn/raw/master/rvn.rvn
