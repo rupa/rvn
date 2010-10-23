@@ -1,3 +1,4 @@
+[ "$1" ] || exit
 touch "$1"
 patch "$1" <<'EOF'
 0a1,126
@@ -443,3 +444,12 @@ patch "$1" <<'EOF'
 >                 file.rvn <output file> [revision number]
 EOF
 echo 8 : documentation
+[ "$2" = 8 ] && exit
+patch "$1" <<'EOF'
+52c52,53
+<         echo "touch \"\$1\"" > "$fl.$file_ext"
+---
+>         echo "[ \"\$1\" ] || exit" > "$fl.$file_ext"
+>         echo "touch \"\$1\"" >> "$fl.$file_ext"
+EOF
+echo 9 : prevent running .rvn file if no filename provided
