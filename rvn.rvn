@@ -453,3 +453,87 @@ patch "$1" <<'EOF'
 >         echo "touch \"\$1\"" >> "$fl.$file_ext"
 EOF
 echo 9 : prevent running .rvn file if no filename provided
+[ "$2" = 9 ] && exit
+patch "$1" <<'EOF'
+3c3
+< file_ext="rvn"
+---
+> ext="rvn"
+51,58c51,58
+<     [ -f "$fl.$file_ext" ] || {
+<         echo "[ \"\$1\" ] || exit" > "$fl.$file_ext"
+<         echo "touch \"\$1\"" >> "$fl.$file_ext"
+<         echo "patch \"\$1\" <<'EOF'" >> "$fl.$file_ext"
+<         echo -n | diff - "$fl" >> "$fl.$file_ext"
+<         echo "EOF" >> "$fl.$file_ext"
+<         echo "echo 0 : $*" >> "$fl.$file_ext"
+<         echo "committed $fl version 0"
+---
+>     [ -f "$fl.$ext" ] || {
+>         echo "[ \"\$1\" ] || exit" > "$fl.$ext"
+>         echo "touch \"\$1\"" >> "$fl.$ext"
+>         echo "patch \"\$1\" <<'EOF'" >> "$fl.$ext"
+>         echo -n | diff - "$fl" >> "$fl.$ext"
+>         echo "EOF" >> "$fl.$ext"
+>         echo "echo 0 : $*" >> "$fl.$ext"
+>         echo "committed $fl revision 0"
+64c64
+<     bash "$fl.$file_ext" "$tmp" head >/dev/null
+---
+>     bash "$fl.$ext" "$tmp" head >/dev/null
+70,73c70,73
+<         # current version
+<         v=$(tail -n 1 "$fl.$file_ext" | cut -d" " -f 2)
+<         # commit next version
+<         echo "[ \"\$2\" = $v ] && exit" >> "$fl.$file_ext"
+---
+>         # current revision
+>         v=$(tail -n 1 "$fl.$ext" | cut -d" " -f 2)
+>         # commit next revision
+>         echo "[ \"\$2\" = $v ] && exit" >> "$fl.$ext"
+75,79c75,79
+<         echo "patch \"\$1\" <<'EOF'" >> "$fl.$file_ext"
+<         diff "$tmp" "$fl" >> "$fl.$file_ext"
+<         echo "EOF" >> "$fl.$file_ext"
+<         echo "echo $v : $*" >> "$fl.$file_ext"
+<         echo "committed $fl version $v"
+---
+>         echo "patch \"\$1\" <<'EOF'" >> "$fl.$ext"
+>         diff "$tmp" "$fl" >> "$fl.$ext"
+>         echo "EOF" >> "$fl.$ext"
+>         echo "echo $v : $*" >> "$fl.$ext"
+>         echo "committed $fl revision $v"
+88c88
+<     [ -f "$fl.$file_ext" ] || except 3 "$fl.$file_ext"
+---
+>     [ -f "$fl.$ext" ] || except 3 "$fl.$ext"
+91,92c91,92
+<     bash "$fl.$file_ext" "$fl.$v" "$v" >/dev/null
+<     echo "$fl version $v checked out to $fl.$v"
+---
+>     bash "$fl.$ext" "$fl.$v" "$v" >/dev/null
+>     echo "$fl revision $v checked out to $fl.$v"
+95c95
+< _diff() {
+---
+> mydiff() {
+98c98
+<     [ -f "$fl.$file_ext" ] || except 3 "$fl.$file_ext"
+---
+>     [ -f "$fl.$ext" ] || except 3 "$fl.$ext"
+103c103
+<         bash "$fl.$file_ext" "$tmp" head >/dev/null
+---
+>         bash "$fl.$ext" "$tmp" head >/dev/null
+114,115c114,115
+<     [ -f "$fl.$file_ext" ] || except 3 "$fl.$file_ext"
+<     tac "$fl.$file_ext" | egrep "^echo ${s:-[0-9]+} : " | sed 's/^echo /version: /'
+---
+>     [ -f "$fl.$ext" ] || except 3 "$fl.$ext"
+>     tac "$fl.$ext" | egrep "^echo ${s:-[0-9]+} : " | sed 's/^echo /revision: /'
+119c119
+<     d|diff) shift; _diff $* | less;;
+---
+>     d|diff) shift; mydiff $* | less;;
+EOF
+echo 10 : change some variable names
