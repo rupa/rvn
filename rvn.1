@@ -1,0 +1,90 @@
+.TH rvn 1  "October 23, 2010" "version 0.1" "RVN"
+.SH NAME
+rvn \- revision control on single files
+.SH SYNOPSIS
+.B rvn
+d file [rev] | i file [msg] | l file [rev] | o file [rev]
+.PP
+.B rvn
+h
+.SH INSTALLATION
+ wget http://github.com/rupa/rvn/raw/master/rvn.rvn
+ bash rvn.rvn rvn
+ chmod +x rvn
+.SH DESCRIPTION
+rvn is revision control for single files, written in bash, using diffutils.
+.PP
+It is very alpha and probably shouldn't be used. On the other hand, it does
+seem to work.
+.PP
+Revisions are numbered sequentially, starting with 0.
+.SH OPTIONS
+d, diff <file> [revision]
+.PP
+    diff of file with revision. default revision: head
+.TP
+h, help
+.PP
+    help
+.TP
+i, ci, checkin <file> [commit message]
+.PP
+    commit changes to file with commit message.
+.TP
+l, log <file> [revision]
+.PP
+    show a log of (specific) revisions and commit messages.
+.TP
+o, co, checkout <file> [revision]
+.PP
+    checkout revision to file.revision. default revision: head
+.SH ENVIRONMENT
+rvn checks some environment variables:
+.PP
+.B RVN_PRE
+    Override prefix for revision file.
+.PP
+.B RVN_EXT
+    Override file extension for revision file.
+.SH FILES
+.PP
+By default, for
+.B file,
+rvn maintains
+.B .rvn/file.rvn
+in the same directory. File name and location can be configured with environment
+variables. rvn works with this file, which is itself in the form of a shell
+script that can be edited by hand, or executed with bash to recreate any
+revision of the original
+.B file.
+.PP
+Revision files consist mostly of calls to patch, and should be pretty easy to
+edit by hand.
+.SH EXAMPLES
+get started:
+    echo hello world > file
+    # generate initial commit
+    rvn i file my first commit
+    echo goodnight >> file
+    # diff with head
+    rvn d file
+    # another commit
+    rvn i file yay, committing again
+    # check the log
+    rvn l file
+.PP
+Get revision of a file directly from a revision file:
+    bash file.rvn outfile [revision]
+.PP
+Get a repository:
+    wget file.rvn
+    bash file.rvn file
+    mkdir .rvn
+    mv file.rvn .rvn
+    rvn l file
+.SH BUGS
+Too many to list.
+.SH SECURITY CONSIDERATIONS
+Doesn't implement locking or anything.
+.SH SUBMITTING PATCHES
+hehehe ...

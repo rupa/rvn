@@ -1,0 +1,101 @@
+rvn(1)				      RVN				rvn(1)
+
+
+
+NAME
+       rvn - revision control on single files
+
+SYNOPSIS
+       rvn d file [rev] | i file [msg] | l file [rev] | o file [rev]
+
+       rvn h
+
+INSTALLATION
+	wget http://github.com/rupa/rvn/raw/master/rvn.rvn
+	bash rvn.rvn rvn
+	chmod +x rvn
+
+DESCRIPTION
+       rvn is revision control for single files, written in bash, using diffu‐
+       tils.
+
+       It is very alpha and probably shouldn't be used. On the other hand,  it
+       does seem to work.
+
+       Revisions are numbered sequentially, starting with 0.
+
+OPTIONS
+       d, diff <file> [revision]
+
+	   diff of file with revision. default revision: head
+
+       h, help
+
+	   help
+
+       i, ci, checkin <file> [commit message]
+
+	   commit changes to file with commit message.
+
+       l, log <file> [revision]
+
+	   show a log of (specific) revisions and commit messages.
+
+       o, co, checkout <file> [revision]
+
+	   checkout revision to file.revision. default revision: head
+
+ENVIRONMENT
+       rvn checks some environment variables:
+
+       RVN_PRE
+	   Override prefix for revision file.
+
+       RVN_EXT
+	   Override file extension for revision file.
+
+FILES
+       By  default,  for  file, rvn maintains .rvn/file.rvn in the same direc‐
+       tory. File name and location can be configured with  environment  vari‐
+       ables. rvn works with this file, which is itself in the form of a shell
+       script that can be edited by hand, or executed with  bash  to  recreate
+       any revision of the original file.
+
+       Revision  files	consist mostly of calls to patch, and should be pretty
+       easy to edit by hand.
+
+EXAMPLES
+       get started:
+	   echo hello world > file
+	   # generate initial commit
+	   rvn i file my first commit
+	   echo goodnight >> file
+	   # diff with head
+	   rvn d file
+	   # another commit
+	   rvn i file yay, committing again
+	   # check the log
+	   rvn l file
+
+       Get revision of a file directly from a revision file:
+	   bash file.rvn outfile [revision]
+
+       Get a repository:
+	   wget file.rvn
+	   bash file.rvn file
+	   mkdir .rvn
+	   mv file.rvn .rvn
+	   rvn l file
+
+BUGS
+       Too many to list.
+
+SECURITY CONSIDERATIONS
+       Doesn't implement locking or anything.
+
+SUBMITTING PATCHES
+       hehehe ...
+
+
+
+version 0.1		       October 23, 2010 			rvn(1)
