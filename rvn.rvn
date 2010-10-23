@@ -730,3 +730,13 @@ patch "$1" <<'EOF'
 >           RVN_EXT override extension: current: "$ext"
 EOF
 echo 19 : default prefix now .rvn/
+[ "$2" = 19 ] && exit
+patch "$1" <<'EOF'
+53,54c53,54
+<         echo "$pre" | grep -q "/" && {
+<             [ -d "$pre" ] || mkdir -pv "$pre"
+---
+>         [[ "$pre" = */* ]] && {
+>             [ -d "${pre%/*}" ] || mkdir -pv "${pre%/*}"
+EOF
+echo 20 : begrudge an echo and a grep, and make $pre more intuitive
