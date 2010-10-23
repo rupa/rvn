@@ -9,7 +9,7 @@ For `file`, rvn maintains `file.rvn` in the same directory. `rvn` works with
 this file, which is itself in the form of a shell script that can be executed
 with bash to recreate any revision of `file`:
 
-    file.rvn outfile [revision]
+    bash file.rvn outfile [revision]
 
 ## installation
 

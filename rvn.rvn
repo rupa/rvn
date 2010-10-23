@@ -583,3 +583,21 @@ patch "$1" <<'EOF'
 >         bash "$fl.$ext" "$tmp" "${2:-head}" >/dev/null
 EOF
 echo 13 : diff with any revision
+[ "$2" = 13 ] && exit
+patch "$1" <<'EOF'
+10c10
+<     create a file, commit it, edit, commit, repeat ...
+---
+>     create a file, commit it. edit, commit, repeat ...
+25,30c25,26
+<     FILES:
+<         file.rvn
+<             revisions are stored here
+<             can be executed directly with bash:
+<                 file.rvn <output file> [revision]
+< 
+---
+>     revisions are stored in file.rvn, which can be executed directly with bash:
+>          bash file.rvn <output file> [revision]
+EOF
+echo 14 : documentation
