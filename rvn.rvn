@@ -680,3 +680,23 @@ patch "$1" <<'EOF'
 >     tac "$pre$fl.$ext" | egrep "^echo ${s:-[0-9]+} : " | sed 's/^echo /revision: /'
 EOF
 echo 16 : initial support for file prefix
+[ "$2" = 16 ] && exit
+patch "$1" <<'EOF'
+3,4c3,4
+< pre=""
+< ext="rvn"
+---
+> pre="$RVN_PRE"
+> ext="${RVN_EXT:-$(basename $0)}"
+26,27c26,31
+<     revisions are stored in file.rvn, which can be executed directly with bash:
+<          bash file.rvn <output file> [revision]
+---
+>     revisions are stored in ${pre}file.$(basename $0), which can be executed
+>     directly with bash:
+>          bash ${pre}file.$(basename $0) <output file> [revision]
+> 
+>     vars: RVN_PRE override prefix: default ""
+>           RVN_EXT override extension: default: "$(basename $0)"
+EOF
+echo 17 : documentation

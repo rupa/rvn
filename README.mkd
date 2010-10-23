@@ -5,9 +5,9 @@
 It is very alpha and probably shouldn't be used. On the other hand, it does
 seem to work.
 
-For `file`, rvn maintains `file.rvn` in the same directory. `rvn` works with
-this file, which is itself in the form of a shell script that can be executed
-with bash to recreate any revision of `file`:
+By default, for `file`, rvn maintains `file.rvn` in the same directory. `rvn`
+works with this file, which is itself in the form of a shell script that can be
+executed with bash to recreate any revision of `file`:
 
     bash file.rvn outfile [revision]
 
@@ -31,3 +31,16 @@ with bash to recreate any revision of `file`:
         show a log of (specific) revisions and commit messages
     o|co|checkout <file> [revision]
         checkout revision to file.revision (default revision: head)
+
+## configuration
+
+    `rvn` checks some environment variables:
+        RVN_PRE
+            override prefix for revision file.
+            can be a string or a directory (with trailing slash)
+            default ""
+            examples: ".", ".rvn"
+            if a directory, you probably want a relative path.
+        RVN_EXT
+            override file extension for revision file.
+            default: "$(basename $0)" (whatever the `rvn` script is named)
