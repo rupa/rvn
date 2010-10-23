@@ -755,3 +755,19 @@ patch "$1" <<'EOF'
 >         # generate revision
 EOF
 echo 21 : comments and documentation
+[ "$2" = 21 ] && exit
+patch "$1" <<'EOF'
+6c6
+< short_usage="$(basename $0) d | h | i | l | o"
+---
+> short_usage="h | d file [rev] | i file [msg] | l file [rev] | o file [rev]"
+13c13
+<     $short_usage
+---
+>     $(basename $0) $short_usage
+132c132
+<     *) echo $short_usage;;
+---
+>     *) echo "$(basename $0) $short_usage";;
+EOF
+echo 22 : better short usage message
