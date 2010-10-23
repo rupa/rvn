@@ -537,3 +537,13 @@ patch "$1" <<'EOF'
 >     d|diff) shift; mydiff $* | less;;
 EOF
 echo 10 : change some variable names
+[ "$2" = 10 ] && exit
+patch "$1" <<'EOF'
+20,21d19
+<     o|co|checkout <file> [rev]
+<         checkout revision to file.rev (default rev: head)
+23a22,23
+>     o|co|checkout <file> [rev]
+>         checkout revision to file.rev (default rev: head)
+EOF
+echo 11 : documentation
