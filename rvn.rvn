@@ -700,3 +700,19 @@ patch "$1" <<'EOF'
 >           RVN_EXT override extension: default: "$(basename $0)"
 EOF
 echo 17 : documentation
+[ "$2" = 17 ] && exit
+patch "$1" <<'EOF'
+13c13
+< $short_usage
+---
+>     $short_usage
+53d52
+< 
+57d55
+< 
+121c119
+<     tac "$pre$fl.$ext" | egrep "^echo ${s:-[0-9]+} : " | sed 's/^echo /revision: /'
+---
+>     tac "$pre$fl.$ext" | egrep "^echo ${s:-[0-9]+} : " | sed 's/^echo /r: /'
+EOF
+echo 18 : minor cleanup
