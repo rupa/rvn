@@ -716,3 +716,17 @@ patch "$1" <<'EOF'
 >     tac "$pre$fl.$ext" | egrep "^echo ${s:-[0-9]+} : " | sed 's/^echo /r: /'
 EOF
 echo 18 : minor cleanup
+[ "$2" = 18 ] && exit
+patch "$1" <<'EOF'
+3c3
+< pre="$RVN_PRE"
+---
+> pre="${RVN_PRE:-.$(basename $0)/}"
+30,31c30,31
+<     vars: RVN_PRE override prefix: default ""
+<           RVN_EXT override extension: default: "$(basename $0)"
+---
+>     vars: RVN_PRE override prefix: current: "$pre"
+>           RVN_EXT override extension: current: "$ext"
+EOF
+echo 19 : default prefix now .rvn/

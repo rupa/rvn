@@ -5,13 +5,11 @@
 It is very alpha and probably shouldn't be used. On the other hand, it does
 seem to work.
 
-By default, for `file`, rvn maintains `file.rvn` in the same directory. `rvn`
-works with this file, which is itself in the form of a shell script that can be
-executed with bash to recreate any revision of `file`:
+By default, for `file`, rvn maintains `.rvn/file.rvn` in the same directory.
+`rvn` works with this file, which is itself in the form of a shell script that
+can be edited by hand, or executed with bash to recreate any revision of `file`:
 
     bash file.rvn outfile [revision]
-
-As this file is a simple shell script, it can be directly edited with care.
 
 ## installation
 
@@ -40,9 +38,9 @@ As this file is a simple shell script, it can be directly edited with care.
 
     RVN_PRE
         override prefix for revision file.
-        can be a string or a directory (with trailing slash)
-        default `""`
-        examples: `"."`, `".rvn"`
+        can be a string (with no slashes), or a directory (with trailing slash)
+        default `".$(basename $0)/"` (a hidden dir named after the `rvn` script)
+        examples: `"."`, `""`
         if a directory, you probably want a relative path.
     RVN_EXT
         override file extension for revision file.
