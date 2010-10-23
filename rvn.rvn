@@ -1,0 +1,445 @@
+touch "$1"
+patch "$1" <<'EOF'
+0a1,126
+> #!/bin/bash
+> 
+> _usage() {
+> cat <<EOF
+> 
+> $(basename $0) - revision control on single files
+> 
+>     $(basename $0) i|ci|commit <file> [commit msg]
+>         commit changes to file
+>     $(basename $0) o|co|checkout <file> [rev]
+>         checkout revision to file.rev (default rev: head)
+>     $(basename $0) l|log <file> [rev]
+>         show a log of revisions and commit msgs
+>     $(basename $0) d|s|diff|status <file>
+>         status/diff of file
+> 
+>     workflow:
+>         create a file
+>         commit the file
+>         edit the file
+>         commit again
+> 
+>     checkout to a filenme that can be compared to head
+>     head can always be created by running .rvn file
+> 
+>     files:
+>         file.rvn
+>             revisions are stored here
+>             can be executed to create head
+>         file.tmp
+>             scratch file
+> 
+> EOF
+> }
+> 
+> _except() {
+>     case "$1" in
+>         1) echo "missing argument(s)";;
+>         2) echo "file $2 exists";;
+>         3) echo "file $2 missing";;
+>         *) echo "error";;
+>     esac
+>     exit
+> }
+> 
+> _commit() {
+>     fl="$1"
+>     shift
+>     [ "$fl" ] || _except 1
+>     [ -f "$fl" ] || _except 3 "$fl"
+> 
+>     # initial commit
+>     [ -f "$fl.rvn" ] || {
+>         echo "touch \"\$1\"" > "$fl.rvn"
+>         echo "patch \"\$1\" <<'EOF'" >> "$fl.rvn"
+>         echo -n | diff - "$fl" >> "$fl.rvn"
+>         echo "EOF" >> "$fl.rvn"
+>         echo "echo 0 : $*" >> "$fl.rvn"
+>         echo "committed $fl version 0"
+>         return
+>     }
+> 
+>     # generate head
+>     bash "$fl.rvn" "$fl.tmp" head
+> 
+>     if cmp -s "$fl.tmp" "$fl"; then
+>         # no changes, no commit
+>         echo "no changes to $fl, no commit"
+>     else
+>         # current version
+>         v=$(tail -n 1 "$fl.rvn" | cut -d" " -f 2)
+>         # commit next version
+>         echo "[ \"\$2\" = $v ] && exit" >> "$fl.rvn"
+>         echo "patch \"\$1\" <<'EOF'" >> "$fl.rvn"
+>         diff "$fl.tmp" "$fl" >> "$fl.rvn"
+>         echo "EOF" >> "$fl.rvn"
+>         echo "echo $((v + 1)) : $*" >> "$fl.rvn"
+>     fi
+>     rm "$fl.tmp"
+> }
+> 
+> _checkout() {
+>     fl="$1"
+>     shift
+>     [ "$fl" ] || _except 1
+>     [ -f "$fl.rvn" ] || _except 3 "$fl.rvn"
+>     v="${1:-head}"
+>     [ -f "$fl.$v" ] && _except 2 "fl.v"
+>     bash "$fl.rvn" "$fl.$v" "$v" >/dev/null
+>     echo "$fl version $v checked out to $fl.$v"
+> }
+> 
+> _diff() {
+>     fl="$1"
+>     [ "$fl" ] || _except 1
+>     [ -f $fl.rvn ] || _except 3 "$fl.rvn"
+> 
+>     if ! [ -f "$fl" ]; then
+>         echo "$fl not checked out"
+>     else
+>         bash "$fl.rvn" "$fl.tmp" head >/dev/null
+>         if cmp -s "$fl.tmp" "$fl"; then
+>             echo "no changes"
+>         else
+>             diff "$fl.tmp" "$fl"
+>         fi
+>         rm "$fl.tmp"
+>     fi
+> }
+> 
+> _log() {
+>     fl="$1"
+>     shift
+>     [ "$1" ] && s="$*"
+>     [ "$fl" ] || _except 1
+>     [ -f "$fl.rvn" ] || _except 3 "$fl.rvn"
+>     tac "$fl.rvn" | egrep "^echo ${s:-[0-9]+} : " | sed 's/^echo /version: /' | less
+> }
+> 
+> case $1 in
+>     i|ci|commit) shift; _commit $*;;
+>     l|log) shift; _log $*;;
+>     o|co|checkout) shift; _checkout $*;;
+>     d|s|diff|status) shift; _diff $*;;
+>     *) _usage; exit;;
+> esac
+EOF
+echo 0 : self-hosting!
+[ "$2" = 0 ] && exit
+patch "$1" <<'EOF'
+2a3
+> _short_usage="$(basename $0) d | h | i | l | o"
+8,14c9,11
+<     $(basename $0) i|ci|commit <file> [commit msg]
+<         commit changes to file
+<     $(basename $0) o|co|checkout <file> [rev]
+<         checkout revision to file.rev (default rev: head)
+<     $(basename $0) l|log <file> [rev]
+<         show a log of revisions and commit msgs
+<     $(basename $0) d|s|diff|status <file>
+---
+> $_short_usage
+> 
+>     d|diff <file>
+15a13,20
+>     h|help
+>         show this message
+>     i|ci|commit <file> [commit msg]
+>         commit changes to file with commit msg
+>     o|co|checkout <file> [rev]
+>         checkout revision to file.rev (default rev: head)
+>     l|log <file> [rev]
+>         show a log of (specific) revisions and commit msgs
+97d101
+< 
+102,106c106
+<         if cmp -s "$fl.tmp" "$fl"; then
+<             echo "no changes"
+<         else
+<             diff "$fl.tmp" "$fl"
+<         fi
+---
+>         diff "$fl.tmp" "$fl"
+117c117
+<     tac "$fl.rvn" | egrep "^echo ${s:-[0-9]+} : " | sed 's/^echo /version: /' | less
+---
+>     tac "$fl.rvn" | egrep "^echo ${s:-[0-9]+} : " | sed 's/^echo /version: /'
+120a121,122
+>     d|diff) shift; _diff $* | less;;
+>     h|help) _usage;;
+122c124
+<     l|log) shift; _log $*;;
+---
+>     l|log) shift; _log $* | less;;
+124,125c126
+<     d|s|diff|status) shift; _diff $*;;
+<     *) _usage; exit;;
+---
+>     *) echo $_short_usage;;
+EOF
+echo 1 : docs and cleanup
+[ "$2" = 1 ] && exit
+patch "$1" <<'EOF'
+78a79
+>         v=$((v + 1))
+82c83,84
+<         echo "echo $((v + 1)) : $*" >> "$fl.rvn"
+---
+>         echo "echo $v : $*" >> "$fl.rvn"
+>         echo "committed $fl version $v"
+EOF
+echo 2 : commit message
+[ "$2" = 2 ] && exit
+patch "$1" <<'EOF'
+69c69
+<     bash "$fl.rvn" "$fl.tmp" head
+---
+>     bash "$fl.rvn" "$fl.tmp" head >/dev/null
+EOF
+echo 3 : add a /dev/null
+[ "$2" = 3 ] && exit
+patch "$1" <<'EOF'
+7a8
+>     create a file, commit it, edit, commit, repeat ...
+22,31c23
+<     workflow:
+<         create a file
+<         commit the file
+<         edit the file
+<         commit again
+< 
+<     checkout to a filenme that can be compared to head
+<     head can always be created by running .rvn file
+< 
+<     files:
+---
+>     FILES:
+EOF
+echo 4 : documentation
+[ "$2" = 4 ] && exit
+patch "$1" <<'EOF'
+27,28d26
+<         file.tmp
+<             scratch file
+61c59,60
+<     bash "$fl.rvn" "$fl.tmp" head >/dev/null
+---
+>     tmp="$(mktemp)"
+>     bash "$fl.rvn" "$tmp" head >/dev/null
+63c62
+<     if cmp -s "$fl.tmp" "$fl"; then
+---
+>     if cmp -s "$tmp" "$fl"; then
+73c72
+<         diff "$fl.tmp" "$fl" >> "$fl.rvn"
+---
+>         diff "$tmp" "$fl" >> "$fl.rvn"
+78c77
+<     rm "$fl.tmp"
+---
+>     rm "$tmp"
+99,101c98,101
+<         bash "$fl.rvn" "$fl.tmp" head >/dev/null
+<         diff "$fl.tmp" "$fl"
+<         rm "$fl.tmp"
+---
+>         tmp="$(mktemp)"
+>         bash "$fl.rvn" "$tmp" head >/dev/null
+>         diff "$tmp" "$fl"
+>         rm "$tmp"
+EOF
+echo 5 : use mktemp for temp files
+[ "$2" = 5 ] && exit
+patch "$1" <<'EOF'
+2a3
+> _file_ext="rvn"
+48,53c49,54
+<     [ -f "$fl.rvn" ] || {
+<         echo "touch \"\$1\"" > "$fl.rvn"
+<         echo "patch \"\$1\" <<'EOF'" >> "$fl.rvn"
+<         echo -n | diff - "$fl" >> "$fl.rvn"
+<         echo "EOF" >> "$fl.rvn"
+<         echo "echo 0 : $*" >> "$fl.rvn"
+---
+>     [ -f "$fl.$_file_ext" ] || {
+>         echo "touch \"\$1\"" > "$fl.$_file_ext"
+>         echo "patch \"\$1\" <<'EOF'" >> "$fl.$_file_ext"
+>         echo -n | diff - "$fl" >> "$fl.$_file_ext"
+>         echo "EOF" >> "$fl.$_file_ext"
+>         echo "echo 0 : $*" >> "$fl.$_file_ext"
+60c61
+<     bash "$fl.rvn" "$tmp" head >/dev/null
+---
+>     bash "$fl.$_file_ext" "$tmp" head >/dev/null
+67c68
+<         v=$(tail -n 1 "$fl.rvn" | cut -d" " -f 2)
+---
+>         v=$(tail -n 1 "$fl.$_file_ext" | cut -d" " -f 2)
+69c70
+<         echo "[ \"\$2\" = $v ] && exit" >> "$fl.rvn"
+---
+>         echo "[ \"\$2\" = $v ] && exit" >> "$fl.$_file_ext"
+71,74c72,75
+<         echo "patch \"\$1\" <<'EOF'" >> "$fl.rvn"
+<         diff "$tmp" "$fl" >> "$fl.rvn"
+<         echo "EOF" >> "$fl.rvn"
+<         echo "echo $v : $*" >> "$fl.rvn"
+---
+>         echo "patch \"\$1\" <<'EOF'" >> "$fl.$_file_ext"
+>         diff "$tmp" "$fl" >> "$fl.$_file_ext"
+>         echo "EOF" >> "$fl.$_file_ext"
+>         echo "echo $v : $*" >> "$fl.$_file_ext"
+84c85
+<     [ -f "$fl.rvn" ] || _except 3 "$fl.rvn"
+---
+>     [ -f "$fl.$_file_ext" ] || _except 3 "$fl.$_file_ext"
+87c88
+<     bash "$fl.rvn" "$fl.$v" "$v" >/dev/null
+---
+>     bash "$fl.$_file_ext" "$fl.$v" "$v" >/dev/null
+94c95
+<     [ -f $fl.rvn ] || _except 3 "$fl.rvn"
+---
+>     [ -f "$fl.$_file_ext" ] || _except 3 "$fl.$_file_ext"
+99c100
+<         bash "$fl.rvn" "$tmp" head >/dev/null
+---
+>         bash "$fl.$_file_ext" "$tmp" head >/dev/null
+110,111c111,112
+<     [ -f "$fl.rvn" ] || _except 3 "$fl.rvn"
+<     tac "$fl.rvn" | egrep "^echo ${s:-[0-9]+} : " | sed 's/^echo /version: /'
+---
+>     [ -f "$fl.$_file_ext" ] || _except 3 "$fl.$_file_ext"
+>     tac "$fl.$_file_ext" | egrep "^echo ${s:-[0-9]+} : " | sed 's/^echo /version: /'
+EOF
+echo 6 : make file extension configurable
+[ "$2" = 6 ] && exit
+patch "$1" <<'EOF'
+3,5c3,6
+< _file_ext="rvn"
+< _short_usage="$(basename $0) d | h | i | l | o"
+< _usage() {
+---
+> file_ext="rvn"
+> 
+> short_usage="$(basename $0) d | h | i | l | o"
+> usage() {
+11c12
+< $_short_usage
+---
+> $short_usage
+32c33
+< _except() {
+---
+> except() {
+42c43
+< _commit() {
+---
+> commit() {
+45,46c46,47
+<     [ "$fl" ] || _except 1
+<     [ -f "$fl" ] || _except 3 "$fl"
+---
+>     [ "$fl" ] || except 1
+>     [ -f "$fl" ] || except 3 "$fl"
+49,54c50,55
+<     [ -f "$fl.$_file_ext" ] || {
+<         echo "touch \"\$1\"" > "$fl.$_file_ext"
+<         echo "patch \"\$1\" <<'EOF'" >> "$fl.$_file_ext"
+<         echo -n | diff - "$fl" >> "$fl.$_file_ext"
+<         echo "EOF" >> "$fl.$_file_ext"
+<         echo "echo 0 : $*" >> "$fl.$_file_ext"
+---
+>     [ -f "$fl.$file_ext" ] || {
+>         echo "touch \"\$1\"" > "$fl.$file_ext"
+>         echo "patch \"\$1\" <<'EOF'" >> "$fl.$file_ext"
+>         echo -n | diff - "$fl" >> "$fl.$file_ext"
+>         echo "EOF" >> "$fl.$file_ext"
+>         echo "echo 0 : $*" >> "$fl.$file_ext"
+61c62
+<     bash "$fl.$_file_ext" "$tmp" head >/dev/null
+---
+>     bash "$fl.$file_ext" "$tmp" head >/dev/null
+68c69
+<         v=$(tail -n 1 "$fl.$_file_ext" | cut -d" " -f 2)
+---
+>         v=$(tail -n 1 "$fl.$file_ext" | cut -d" " -f 2)
+70c71
+<         echo "[ \"\$2\" = $v ] && exit" >> "$fl.$_file_ext"
+---
+>         echo "[ \"\$2\" = $v ] && exit" >> "$fl.$file_ext"
+72,75c73,76
+<         echo "patch \"\$1\" <<'EOF'" >> "$fl.$_file_ext"
+<         diff "$tmp" "$fl" >> "$fl.$_file_ext"
+<         echo "EOF" >> "$fl.$_file_ext"
+<         echo "echo $v : $*" >> "$fl.$_file_ext"
+---
+>         echo "patch \"\$1\" <<'EOF'" >> "$fl.$file_ext"
+>         diff "$tmp" "$fl" >> "$fl.$file_ext"
+>         echo "EOF" >> "$fl.$file_ext"
+>         echo "echo $v : $*" >> "$fl.$file_ext"
+81c82
+< _checkout() {
+---
+> checkout() {
+84,85c85,86
+<     [ "$fl" ] || _except 1
+<     [ -f "$fl.$_file_ext" ] || _except 3 "$fl.$_file_ext"
+---
+>     [ "$fl" ] || except 1
+>     [ -f "$fl.$file_ext" ] || except 3 "$fl.$file_ext"
+87,88c88,89
+<     [ -f "$fl.$v" ] && _except 2 "fl.v"
+<     bash "$fl.$_file_ext" "$fl.$v" "$v" >/dev/null
+---
+>     [ -f "$fl.$v" ] && except 2 "fl.v"
+>     bash "$fl.$file_ext" "$fl.$v" "$v" >/dev/null
+94,95c95,96
+<     [ "$fl" ] || _except 1
+<     [ -f "$fl.$_file_ext" ] || _except 3 "$fl.$_file_ext"
+---
+>     [ "$fl" ] || except 1
+>     [ -f "$fl.$file_ext" ] || except 3 "$fl.$file_ext"
+100c101
+<         bash "$fl.$_file_ext" "$tmp" head >/dev/null
+---
+>         bash "$fl.$file_ext" "$tmp" head >/dev/null
+106c107
+< _log() {
+---
+> log() {
+110,112c111,113
+<     [ "$fl" ] || _except 1
+<     [ -f "$fl.$_file_ext" ] || _except 3 "$fl.$_file_ext"
+<     tac "$fl.$_file_ext" | egrep "^echo ${s:-[0-9]+} : " | sed 's/^echo /version: /'
+---
+>     [ "$fl" ] || except 1
+>     [ -f "$fl.$file_ext" ] || except 3 "$fl.$file_ext"
+>     tac "$fl.$file_ext" | egrep "^echo ${s:-[0-9]+} : " | sed 's/^echo /version: /'
+117,121c118,122
+<     h|help) _usage;;
+<     i|ci|commit) shift; _commit $*;;
+<     l|log) shift; _log $* | less;;
+<     o|co|checkout) shift; _checkout $*;;
+<     *) echo $_short_usage;;
+---
+>     h|help) usage;;
+>     i|ci|commit) shift; commit $*;;
+>     l|log) shift; log $* | less;;
+>     o|co|checkout) shift; checkout $*;;
+>     *) echo $short_usage;;
+EOF
+echo 7 : change function names
+[ "$2" = 7 ] && exit
+patch "$1" <<'EOF'
+28c28,29
+<             can be executed to create head
+---
+>             can be executed directly with bash:
+>                 file.rvn <output file> [revision number]
+EOF
+echo 8 : documentation
