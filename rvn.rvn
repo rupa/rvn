@@ -609,3 +609,74 @@ patch "$1" <<'EOF'
 >     h|help) usage | less;;
 EOF
 echo 15 : pipe help into less
+[ "$2" = 15 ] && exit
+patch "$1" <<'EOF'
+2a3
+> pre=""
+47,53c48,59
+<     [ -f "$fl.$ext" ] || {
+<         echo "[ \"\$1\" ] || exit" > "$fl.$ext"
+<         echo "touch \"\$1\"" >> "$fl.$ext"
+<         echo "patch \"\$1\" <<'EOF'" >> "$fl.$ext"
+<         echo -n | diff - "$fl" >> "$fl.$ext"
+<         echo "EOF" >> "$fl.$ext"
+<         echo "echo 0 : $*" >> "$fl.$ext"
+---
+>     [ -f "$pre$fl.$ext" ] || {
+> 
+>         echo "$pre" | grep -q "/" && {
+>             [ -d "$pre" ] || mkdir -pv "$pre"
+>         }
+> 
+>         echo "[ \"\$1\" ] || exit" > "$pre$fl.$ext"
+>         echo "touch \"\$1\"" >> "$pre$fl.$ext"
+>         echo "patch \"\$1\" <<'EOF'" >> "$pre$fl.$ext"
+>         echo -n | diff - "$fl" >> "$pre$fl.$ext"
+>         echo "EOF" >> "$pre$fl.$ext"
+>         echo "echo 0 : $*" >> "$pre$fl.$ext"
+60c66
+<     bash "$fl.$ext" "$tmp" head >/dev/null
+---
+>     bash "$pre$fl.$ext" "$tmp" head >/dev/null
+67c73
+<         v=$(tail -n 1 "$fl.$ext" | cut -d" " -f 2)
+---
+>         v=$(tail -n 1 "$pre$fl.$ext" | cut -d" " -f 2)
+69c75
+<         echo "[ \"\$2\" = $v ] && exit" >> "$fl.$ext"
+---
+>         echo "[ \"\$2\" = $v ] && exit" >> "$pre$fl.$ext"
+71,74c77,80
+<         echo "patch \"\$1\" <<'EOF'" >> "$fl.$ext"
+<         diff "$tmp" "$fl" >> "$fl.$ext"
+<         echo "EOF" >> "$fl.$ext"
+<         echo "echo $v : $*" >> "$fl.$ext"
+---
+>         echo "patch \"\$1\" <<'EOF'" >> "$pre$fl.$ext"
+>         diff "$tmp" "$fl" >> "$pre$fl.$ext"
+>         echo "EOF" >> "$pre$fl.$ext"
+>         echo "echo $v : $*" >> "$pre$fl.$ext"
+84c90
+<     [ -f "$fl.$ext" ] || except 3 "$fl.$ext"
+---
+>     [ -f "$pre$fl.$ext" ] || except 3 "$pre$fl.$ext"
+87c93
+<     bash "$fl.$ext" "$fl.$v" "$v" >/dev/null
+---
+>     bash "$pre$fl.$ext" "$fl.$v" "$v" >/dev/null
+94c100
+<     [ -f "$fl.$ext" ] || except 3 "$fl.$ext"
+---
+>     [ -f "$pre$fl.$ext" ] || except 3 "$pre$fl.$ext"
+99c105
+<         bash "$fl.$ext" "$tmp" "${2:-head}" >/dev/null
+---
+>         bash "$pre$fl.$ext" "$tmp" "${2:-head}" >/dev/null
+110,111c116,117
+<     [ -f "$fl.$ext" ] || except 3 "$fl.$ext"
+<     tac "$fl.$ext" | egrep "^echo ${s:-[0-9]+} : " | sed 's/^echo /revision: /'
+---
+>     [ -f "$pre$fl.$ext" ] || except 3 "$pre$fl.$ext"
+>     tac "$pre$fl.$ext" | egrep "^echo ${s:-[0-9]+} : " | sed 's/^echo /revision: /'
+EOF
+echo 16 : initial support for file prefix
