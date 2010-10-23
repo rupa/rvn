@@ -740,3 +740,18 @@ patch "$1" <<'EOF'
 >             [ -d "${pre%/*}" ] || mkdir -pv "${pre%/*}"
 EOF
 echo 20 : begrudge an echo and a grep, and make $pre more intuitive
+[ "$2" = 20 ] && exit
+patch "$1" <<'EOF'
+29a30,31
+>     revisions are numbered sequentially, starting with 0.
+> 
+74c76
+<         # current revision
+---
+>         # get current revision
+94a97
+>     # generate revision
+106a110
+>         # generate revision
+EOF
+echo 21 : comments and documentation
