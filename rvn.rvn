@@ -547,3 +547,25 @@ patch "$1" <<'EOF'
 >         checkout revision to file.rev (default rev: head)
 EOF
 echo 11 : documentation
+[ "$2" = 11 ] && exit
+patch "$1" <<'EOF'
+18,19c18,19
+<     i|ci|commit <file> [commit msg]
+<         commit changes to file with commit msg
+---
+>     i|ci|commit <file> [commit message]
+>         commit changes to file with commit message
+21,23c21,23
+<         show a log of (specific) revisions and commit msgs
+<     o|co|checkout <file> [rev]
+<         checkout revision to file.rev (default rev: head)
+---
+>         show a log of (specific) revisions and commit messages
+>     o|co|checkout <file> [revision]
+>         checkout revision to file.revision (default revision: head)
+29c29
+<                 file.rvn <output file> [revision number]
+---
+>                 file.rvn <output file> [revision]
+EOF
+echo 12 : documentation

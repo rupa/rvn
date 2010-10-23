@@ -7,7 +7,7 @@ seem to work.
 
 For `file`, rvn maintains `file.rvn` in the same directory. `rvn` works with
 this file, which is itself in the form of a shell script that can be executed
-with bash to recreate `file.[revision]`:
+with bash to recreate any revision of `file`:
 
     file.rvn outfile [revision]
 
@@ -25,9 +25,9 @@ with bash to recreate `file.[revision]`:
         status/diff of file
     h|help
         show this message
-    i|ci|commit <file> [commit msg]
-        commit changes to file with commit msg
-    o|co|checkout <file> [rev]
-        checkout revision to file.rev (default rev: head)
-    l|log <file> [rev]
-        show a log of (specific) revisions and commit msgs
+    i|ci|commit <file> [commit message]
+        commit changes to file with commit message
+    l|log <file> [revision]
+        show a log of (specific) revisions and commit messages
+    o|co|checkout <file> [revision]
+        checkout revision to file.revision (default revision: head)
