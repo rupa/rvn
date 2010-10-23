@@ -36,12 +36,12 @@ executed with bash to recreate any revision of `file`:
 
 `rvn` checks some environment variables:
 
-    * RVN_PRE
+    RVN_PRE
         override prefix for revision file.
         can be a string or a directory (with trailing slash)
         default `""`
         examples: `"."`, `".rvn"`
         if a directory, you probably want a relative path.
-    * RVN_EXT
+    RVN_EXT
         override file extension for revision file.
         default: `"$(basename $0)"` (whatever the `rvn` script is named)
