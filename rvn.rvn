@@ -601,3 +601,11 @@ patch "$1" <<'EOF'
 >          bash file.rvn <output file> [revision]
 EOF
 echo 14 : documentation
+[ "$2" = 14 ] && exit
+patch "$1" <<'EOF'
+116c116
+<     h|help) usage;;
+---
+>     h|help) usage | less;;
+EOF
+echo 15 : pipe help into less
