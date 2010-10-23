@@ -1,13 +1,13 @@
 ## summary
 
-`rvn` is revision control for single files, written in bash, using standard
-tools.
+`rvn` is revision control for single files, written in bash, using diffutils.
 
-It is super alpha and probably shouldn't be used. On the other hand, it
-does seem to work.
+It is very alpha and probably shouldn't be used. On the other hand, it does
+seem to work.
 
 For `file`, rvn maintains `file.rvn` in the same directory. `rvn` works with
-this file, but it can iself be executed with bash to recreate `file.[revision]`:
+this file, which is itself in the form of a shell script that can be executed
+with bash to recreate `file.[revision]`:
 
     file.rvn outfile [revision]
 
