@@ -1,7 +1,9 @@
-*summary*
+## summary
 
 `rvn` is revision control for single files, written in bash, using standard
-tools. It is super alpha and probably shouldn't be used. On the other hand, it
+tools.
+
+It is super alpha and probably shouldn't be used. On the other hand, it
 does seem to work.
 
 For `file`, rvn maintains `file.rvn` in the same directory. `rvn` works with
@@ -9,12 +11,12 @@ this file, but it can iself be executed with bash to recreate `file.[revision]`:
 
     file.rvn outfile [revision]
 
-*installation*
+## installation
 
     bash rvn.rvn rvn
     chmod +x rvn
 
-*usage*
+## usage
 
     rvn d | h | i | l | o
 
