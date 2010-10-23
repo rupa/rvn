@@ -45,3 +45,7 @@ can be edited by hand, or executed with bash to recreate any revision of `file`:
     RVN_EXT
         override file extension for revision file.
         default: `"$(basename $0)"` (whatever the `rvn` script is named)
+
+# submitting patches to this project
+
+hahaha ... I'm sure you'll think of a good way to.
