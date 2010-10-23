@@ -569,3 +569,17 @@ patch "$1" <<'EOF'
 >                 file.rvn <output file> [revision]
 EOF
 echo 12 : documentation
+[ "$2" = 12 ] && exit
+patch "$1" <<'EOF'
+14,15c14,15
+<     d|diff <file>
+<         status/diff of file
+---
+>     d|diff <file> [revision]
+>         diff of file with revision (default revision: head)
+103c103
+<         bash "$fl.$ext" "$tmp" head >/dev/null
+---
+>         bash "$fl.$ext" "$tmp" "${2:-head}" >/dev/null
+EOF
+echo 13 : diff with any revision

@@ -21,8 +21,8 @@ with bash to recreate any revision of `file`:
 
     rvn d | h | i | l | o
 
-    d|diff <file>
-        status/diff of file
+    d|diff <file> [revision]
+        diff of file with revision (default revision: head)
     h|help
         show this message
     i|ci|commit <file> [commit message]
