@@ -3,7 +3,7 @@
 rvn \- revision control on single files
 .SH SYNOPSIS
 .B rvn
-d file [rev] | i file [msg] | l file [rev] | o file [rev]
+c file [msg] | d file [rev] | l file [rev] | o file [rev] | s file
 .PP
 .B rvn
 h
@@ -22,6 +22,10 @@ seem to work.
 .PP
 Revisions are numbered sequentially, starting with 0.
 .SH OPTIONS
+c, ci, checkin <file> [commit message]
+.PP
+    commit changes to file with commit message.
+.TP
 d, diff <file> [revision]
 .PP
     diff of file with revision. default revision: head
@@ -30,10 +34,6 @@ h, help
 .PP
     help
 .TP
-i, ci, checkin <file> [commit message]
-.PP
-    commit changes to file with commit message.
-.TP
 l, log <file> [revision]
 .PP
     show a log of (specific) revisions and commit messages.
@@ -41,6 +41,10 @@ l, log <file> [revision]
 o, co, checkout <file> [revision]
 .PP
     checkout revision to file.revision. default revision: head
+.TP
+s, status <file>
+.PP
+    short status message for file
 .SH ENVIRONMENT
 rvn checks some environment variables:
 .PP

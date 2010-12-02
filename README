@@ -6,7 +6,7 @@ NAME
        rvn - revision control on single files
 
 SYNOPSIS
-       rvn d file [rev] | i file [msg] | l file [rev] | o file [rev]
+       rvn c file [msg] | d file [rev] | l file [rev] | o file [rev] | s file
 
        rvn h
 
@@ -28,6 +28,10 @@ DESCRIPTION
        Revisions are numbered sequentially, starting with 0.
 
 OPTIONS
+       c, ci, checkin <file> [commit message]
+
+	   commit changes to file with commit message.
+
        d, diff <file> [revision]
 
 	   diff of file with revision. default revision: head
@@ -36,10 +40,6 @@ OPTIONS
 
 	   help
 
-       i, ci, checkin <file> [commit message]
-
-	   commit changes to file with commit message.
-
        l, log <file> [revision]
 
 	   show a log of (specific) revisions and commit messages.
@@ -47,6 +47,10 @@ OPTIONS
        o, co, checkout <file> [revision]
 
 	   checkout revision to file.revision. default revision: head
+
+       s, status <file>
+
+	   short status message for file
 
 ENVIRONMENT
        rvn checks some environment variables:

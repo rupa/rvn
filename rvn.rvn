@@ -771,3 +771,69 @@ patch "$1" <<'EOF'
 >     *) echo "$(basename $0) $short_usage";;
 EOF
 echo 22 : better short usage message
+[ "$2" = 22 ] && exit
+patch "$1" <<'EOF'
+6c6
+< short_usage="h | d file [rev] | i file [msg] | l file [rev] | o file [rev]"
+---
+> opts="h | d file [rev] | i file [msg] | l file [rev] | o file [rev] | s file"
+13c13
+<     $(basename $0) $short_usage
+---
+>     $(basename $0) $opts
+125a126,133
+> mystatus() {
+>     if [ "$(mydiff $*)" ]; then
+>         echo "uncommitted changes"
+>     else
+>         echo "no changes"
+>     fi
+> }
+> 
+132c140,141
+<     *) echo "$(basename $0) $short_usage";;
+---
+>     s|status) shift; mystatus;;
+>     *) echo "$(basename $0) $opts";;
+EOF
+echo 23 : add status option
+[ "$2" = 23 ] && exit
+patch "$1" <<'EOF'
+6c6
+< opts="h | d file [rev] | i file [msg] | l file [rev] | o file [rev] | s file"
+---
+> opts="h | c file [msg] | d file [rev] | l file [rev] | o file [rev] | s file"
+14a15,16
+>     c|ci|commit <file> [commit message]
+>         commit changes to file with commit message
+19,20d20
+<     i|ci|commit <file> [commit message]
+<         commit changes to file with commit message
+24a25,26
+>     s|status <file>
+>         short status message for file
+134a137
+>     c|ci|commit) shift; commit $*;;
+137d139
+<     i|ci|commit) shift; commit $*;;
+EOF
+echo 24 : change commit shortopt to c, and document status function
+[ "$2" = 24 ] && exit
+patch "$1" <<'EOF'
+128a129,130
+>     fl="$1"
+>     [ -f "$pre$fl.$ext" ] || except 3 "$pre$fl.$ex"
+130c132
+<         echo "uncommitted changes"
+---
+>         echo "uncommitted changes to $fl"
+132c134
+<         echo "no changes"
+---
+>         echo "no changes to $fl"
+142c144
+<     s|status) shift; mystatus;;
+---
+>     s|status) shift; mystatus $*;;
+EOF
+echo 25 : refinements to status function
