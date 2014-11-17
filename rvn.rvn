@@ -131,7 +131,7 @@ patch "$1" <<'EOF'
 >     *) _usage; exit;;
 > esac
 EOF
-echo 0 : self-hosting!
+echo 0 # self-hosting!
 [ "$2" = 0 ] && exit
 patch "$1" <<'EOF'
 2a3
@@ -184,7 +184,7 @@ patch "$1" <<'EOF'
 ---
 >     *) echo $_short_usage;;
 EOF
-echo 1 : docs and cleanup
+echo 1 # docs and cleanup
 [ "$2" = 1 ] && exit
 patch "$1" <<'EOF'
 78a79
@@ -195,7 +195,7 @@ patch "$1" <<'EOF'
 >         echo "echo $v : $*" >> "$fl.rvn"
 >         echo "committed $fl version $v"
 EOF
-echo 2 : commit message
+echo 2 # commit message
 [ "$2" = 2 ] && exit
 patch "$1" <<'EOF'
 69c69
@@ -203,7 +203,7 @@ patch "$1" <<'EOF'
 ---
 >     bash "$fl.rvn" "$fl.tmp" head >/dev/null
 EOF
-echo 3 : add a /dev/null
+echo 3 # add a /dev/null
 [ "$2" = 3 ] && exit
 patch "$1" <<'EOF'
 7a8
@@ -222,7 +222,7 @@ patch "$1" <<'EOF'
 ---
 >     FILES:
 EOF
-echo 4 : documentation
+echo 4 # documentation
 [ "$2" = 4 ] && exit
 patch "$1" <<'EOF'
 27,28d26
@@ -255,7 +255,7 @@ patch "$1" <<'EOF'
 >         diff "$tmp" "$fl"
 >         rm "$tmp"
 EOF
-echo 5 : use mktemp for temp files
+echo 5 # use mktemp for temp files
 [ "$2" = 5 ] && exit
 patch "$1" <<'EOF'
 2a3
@@ -319,7 +319,7 @@ patch "$1" <<'EOF'
 >     [ -f "$fl.$_file_ext" ] || _except 3 "$fl.$_file_ext"
 >     tac "$fl.$_file_ext" | egrep "^echo ${s:-[0-9]+} : " | sed 's/^echo /version: /'
 EOF
-echo 6 : make file extension configurable
+echo 6 # make file extension configurable
 [ "$2" = 6 ] && exit
 patch "$1" <<'EOF'
 3,5c3,6
@@ -436,7 +436,7 @@ patch "$1" <<'EOF'
 >     o|co|checkout) shift; checkout $*;;
 >     *) echo $short_usage;;
 EOF
-echo 7 : change function names
+echo 7 # change function names
 [ "$2" = 7 ] && exit
 patch "$1" <<'EOF'
 28c28,29
@@ -445,7 +445,7 @@ patch "$1" <<'EOF'
 >             can be executed directly with bash:
 >                 file.rvn <output file> [revision number]
 EOF
-echo 8 : documentation
+echo 8 # documentation
 [ "$2" = 8 ] && exit
 patch "$1" <<'EOF'
 52c52,53
@@ -454,7 +454,7 @@ patch "$1" <<'EOF'
 >         echo "[ \"\$1\" ] || exit" > "$fl.$file_ext"
 >         echo "touch \"\$1\"" >> "$fl.$file_ext"
 EOF
-echo 9 : prevent running .rvn file if no filename provided
+echo 9 # prevent running .rvn file if no filename provided
 [ "$2" = 9 ] && exit
 patch "$1" <<'EOF'
 3c3
@@ -538,7 +538,7 @@ patch "$1" <<'EOF'
 ---
 >     d|diff) shift; mydiff $* | less;;
 EOF
-echo 10 : change some variable names
+echo 10 # change some variable names
 [ "$2" = 10 ] && exit
 patch "$1" <<'EOF'
 20,21d19
@@ -548,7 +548,7 @@ patch "$1" <<'EOF'
 >     o|co|checkout <file> [rev]
 >         checkout revision to file.rev (default rev: head)
 EOF
-echo 11 : documentation
+echo 11 # documentation
 [ "$2" = 11 ] && exit
 patch "$1" <<'EOF'
 18,19c18,19
@@ -570,7 +570,7 @@ patch "$1" <<'EOF'
 ---
 >                 file.rvn <output file> [revision]
 EOF
-echo 12 : documentation
+echo 12 # documentation
 [ "$2" = 12 ] && exit
 patch "$1" <<'EOF'
 14,15c14,15
@@ -584,7 +584,7 @@ patch "$1" <<'EOF'
 ---
 >         bash "$fl.$ext" "$tmp" "${2:-head}" >/dev/null
 EOF
-echo 13 : diff with any revision
+echo 13 # diff with any revision
 [ "$2" = 13 ] && exit
 patch "$1" <<'EOF'
 10c10
@@ -602,7 +602,7 @@ patch "$1" <<'EOF'
 >     revisions are stored in file.rvn, which can be executed directly with bash:
 >          bash file.rvn <output file> [revision]
 EOF
-echo 14 : documentation
+echo 14 # documentation
 [ "$2" = 14 ] && exit
 patch "$1" <<'EOF'
 116c116
@@ -610,7 +610,7 @@ patch "$1" <<'EOF'
 ---
 >     h|help) usage | less;;
 EOF
-echo 15 : pipe help into less
+echo 15 # pipe help into less
 [ "$2" = 15 ] && exit
 patch "$1" <<'EOF'
 2a3
@@ -681,7 +681,7 @@ patch "$1" <<'EOF'
 >     [ -f "$pre$fl.$ext" ] || except 3 "$pre$fl.$ext"
 >     tac "$pre$fl.$ext" | egrep "^echo ${s:-[0-9]+} : " | sed 's/^echo /revision: /'
 EOF
-echo 16 : initial support for file prefix
+echo 16 # initial support for file prefix
 [ "$2" = 16 ] && exit
 patch "$1" <<'EOF'
 3,4c3,4
@@ -701,7 +701,7 @@ patch "$1" <<'EOF'
 >     vars: RVN_PRE override prefix: default ""
 >           RVN_EXT override extension: default: "$(basename $0)"
 EOF
-echo 17 : documentation
+echo 17 # documentation
 [ "$2" = 17 ] && exit
 patch "$1" <<'EOF'
 13c13
@@ -717,7 +717,7 @@ patch "$1" <<'EOF'
 ---
 >     tac "$pre$fl.$ext" | egrep "^echo ${s:-[0-9]+} : " | sed 's/^echo /r: /'
 EOF
-echo 18 : minor cleanup
+echo 18 # minor cleanup
 [ "$2" = 18 ] && exit
 patch "$1" <<'EOF'
 3c3
@@ -731,7 +731,7 @@ patch "$1" <<'EOF'
 >     vars: RVN_PRE override prefix: current: "$pre"
 >           RVN_EXT override extension: current: "$ext"
 EOF
-echo 19 : default prefix now .rvn/
+echo 19 # default prefix now .rvn/
 [ "$2" = 19 ] && exit
 patch "$1" <<'EOF'
 53,54c53,54
@@ -741,7 +741,7 @@ patch "$1" <<'EOF'
 >         [[ "$pre" = */* ]] && {
 >             [ -d "${pre%/*}" ] || mkdir -pv "${pre%/*}"
 EOF
-echo 20 : begrudge an echo and a grep, and make $pre more intuitive
+echo 20 # begrudge an echo and a grep, and make $pre more intuitive
 [ "$2" = 20 ] && exit
 patch "$1" <<'EOF'
 29a30,31
@@ -756,7 +756,7 @@ patch "$1" <<'EOF'
 106a110
 >         # generate revision
 EOF
-echo 21 : comments and documentation
+echo 21 # comments and documentation
 [ "$2" = 21 ] && exit
 patch "$1" <<'EOF'
 6c6
@@ -772,7 +772,7 @@ patch "$1" <<'EOF'
 ---
 >     *) echo "$(basename $0) $short_usage";;
 EOF
-echo 22 : better short usage message
+echo 22 # better short usage message
 [ "$2" = 22 ] && exit
 patch "$1" <<'EOF'
 6c6
@@ -798,7 +798,7 @@ patch "$1" <<'EOF'
 >     s|status) shift; mystatus;;
 >     *) echo "$(basename $0) $opts";;
 EOF
-echo 23 : add status option
+echo 23 # add status option
 [ "$2" = 23 ] && exit
 patch "$1" <<'EOF'
 6c6
@@ -819,7 +819,7 @@ patch "$1" <<'EOF'
 137d139
 <     i|ci|commit) shift; commit $*;;
 EOF
-echo 24 : change commit shortopt to c, and document status function
+echo 24 # change commit shortopt to c, and document status function
 [ "$2" = 24 ] && exit
 patch "$1" <<'EOF'
 128a129,130
@@ -838,7 +838,7 @@ patch "$1" <<'EOF'
 ---
 >     s|status) shift; mystatus $*;;
 EOF
-echo 25 : refinements to status function
+echo 25 # refinements to status function
 [ "$2" = 25 ] && exit
 patch "$1" <<'EOF'
 60c60,62
@@ -848,4 +848,232 @@ patch "$1" <<'EOF'
 >         echo "# You probably don't want to edit it by hand" >> "$pre$fl.$ext"
 >         echo "[ \"\$1\" ] || exit" >> "$pre$fl.$ext"
 EOF
-echo 26 : add some comments to the top of .rvn files
+echo 26 # add some comments to the top of .rvn files
+[ "$2" = 26 ] && exit
+patch "$1" <<'EOF'
+141,144c141,144
+<     c|ci|commit) shift; commit $*;;
+<     d|diff) shift; mydiff $* | less;;
+<     h|help) usage | less;;
+<     l|log) shift; log $* | less;;
+---
+>     c|ci|commit)   shift; commit $*;;
+>     d|diff)        shift; mydiff $* | less;;
+>     h|help)               usage | less;;
+>     l|log)         shift; log $* | less;;
+146c146
+<     s|status) shift; mystatus $*;;
+---
+>     s|status)      shift; mystatus $*;;
+EOF
+echo 27 # a little reformatting
+[ "$2" = 27 ] && exit
+patch "$1" <<'EOF'
+147c147
+<     *) echo "$(basename $0) $opts";;
+---
+>     *)                    echo "$(basename $0) $opts";;
+EOF
+echo 28 # more reformatting
+[ "$2" = 28 ] && exit
+patch "$1" <<'EOF'
+60c60
+<         echo "# this is a revision file generated by rvn" > "$pre$fl.$ext"
+---
+>         echo "# This is a revision file generated by rvn" > "$pre$fl.$ext"
+EOF
+echo 29 # capitalization
+[ "$2" = 29 ] && exit
+patch "$1" <<'EOF'
+28c28
+<     revisions are stored in ${pre}file.$(basename $0), which can be executed
+---
+>     revisions are stored in ${pre}file.${ext}, which can be executed
+30c30
+<          bash ${pre}file.$(basename $0) <output file> [revision]
+---
+>          bash ${pre}file.${ext} <output file> [revision]
+EOF
+echo 30 # "refactor usage()"
+[ "$2" = 30 ] && exit
+patch "$1" <<'EOF'
+11c11,12
+<     create a file, commit it. edit, commit, repeat ...
+---
+> 
+>     Create a file, commit it. Edit, commit, repeat ...
+16c17
+<         commit changes to file with commit message
+---
+>         Commit changes to file with commit message.
+18c19
+<         diff of file with revision (default revision: head)
+---
+>         Diff file against revision (default revision: head).
+20c21
+<         show this message
+---
+>         Show this message.
+22c23
+<         show a log of (specific) revisions and commit messages
+---
+>         Show a log of (specified) revisions and commit messages.
+24c25
+<         checkout revision to file.revision (default revision: head)
+---
+>         Check out revision to file.revision (default revision: head).
+26c27
+<         short status message for file
+---
+>         Short status message for file.
+28c29
+<     revisions are stored in ${pre}file.${ext}, which can be executed
+---
+>     Revisions are stored in ${pre}file.${ext}, which can be executed
+32c33
+<     revisions are numbered sequentially, starting with 0.
+---
+>     Revisions are numbered sequentially, starting with 0.
+34c35
+<     vars: RVN_PRE override prefix: current: "$pre"
+---
+>     Vars: RVN_PRE override prefix: current: "$pre"
+EOF
+echo 31 # "cosmetically better usage()"
+[ "$2" = 31 ] && exit
+patch "$1" <<'EOF'
+128c128
+<     tac "$pre$fl.$ext" | egrep "^echo ${s:-[0-9]+} : " | sed 's/^echo /r: /'
+---
+>     egrep "^echo ${s:-[0-9]+} : " "$pre$fl.$ext" | sed 's/^echo /r: /' | tac
+EOF
+echo 32 # fiddle with log code
+[ "$2" = 32 ] && exit
+patch "$1" <<'EOF'
+68c68
+<         echo "echo 0 : $*" >> "$pre$fl.$ext"
+---
+>         echo "echo 0 # $*" >> "$pre$fl.$ext"
+89c89
+<         echo "echo $v : $*" >> "$pre$fl.$ext"
+---
+>         echo "echo $v # $*" >> "$pre$fl.$ext"
+128c128
+<     egrep "^echo ${s:-[0-9]+} : " "$pre$fl.$ext" | sed 's/^echo /r: /' | tac
+---
+>     egrep "^echo ${s:-[0-9]+} # " "$pre$fl.$ext" | sed 's/^echo /r: /' | tac
+EOF
+echo 33 # store log messages commented so shell metacharacters don't fuck it up
+[ "$2" = 33 ] && exit
+patch "$1" <<'EOF'
+143,145c143,145
+<     d|diff)        shift; mydiff $* | less;;
+<     h|help)               usage | less;;
+<     l|log)         shift; log $* | less;;
+---
+>     d|diff)        shift; mydiff $*;;
+>     h|help)               usage;;
+>     l|log)         shift; log $*;;
+EOF
+echo 34 # don't use less, I'll type it myself if I want it
+[ "$2" = 34 ] && exit
+patch "$1" <<'EOF'
+61,68c61,68
+<         echo "# This is a revision file generated by rvn" > "$pre$fl.$ext"
+<         echo "# You probably don't want to edit it by hand" >> "$pre$fl.$ext"
+<         echo "[ \"\$1\" ] || exit" >> "$pre$fl.$ext"
+<         echo "touch \"\$1\"" >> "$pre$fl.$ext"
+<         echo "patch \"\$1\" <<'EOF'" >> "$pre$fl.$ext"
+<         echo -n | diff - "$fl" >> "$pre$fl.$ext"
+<         echo "EOF" >> "$pre$fl.$ext"
+<         echo "echo 0 # $*" >> "$pre$fl.$ext"
+---
+>         (echo "# This is a revision file generated by rvn;"
+>          echo "# you probably don't want to edit it by hand."
+>          echo "[ \"\$1\" ] || exit"
+>          echo "touch \"\$1\""
+>          echo "patch \"\$1\" <<'EOF'"
+>          echo -n | diff - "$fl"
+>          echo "EOF"
+>          echo "echo 0 # $*") > "$pre$fl.$ext"
+84,89c84,89
+<         echo "[ \"\$2\" = $v ] && exit" >> "$pre$fl.$ext"
+<         v=$((v + 1))
+<         echo "patch \"\$1\" <<'EOF'" >> "$pre$fl.$ext"
+<         diff "$tmp" "$fl" >> "$pre$fl.$ext"
+<         echo "EOF" >> "$pre$fl.$ext"
+<         echo "echo $v # $*" >> "$pre$fl.$ext"
+---
+>         (echo "[ \"\$2\" = $v ] && exit"
+>          v=$((v + 1))
+>          echo "patch \"\$1\" <<'EOF'"
+>          diff "$tmp" "$fl"
+>          echo "EOF"
+>          echo "echo $v # $*") >> "$pre$fl.$ext"
+EOF
+echo 35 # clean up commit()
+patch "$1" <<'EOF'
+56,57c56,59
+<     # initial commit
+<     [ -f "$pre$fl.$ext" ] || {
+---
+>     tmp="$(mktemp)"
+> 
+>     if ! [ -f "$pre$fl.$ext" ]; then
+>         # initial commit
+61,75c63,70
+<         (echo "# This is a revision file generated by rvn;"
+<          echo "# you probably don't want to edit it by hand."
+<          echo "[ \"\$1\" ] || exit"
+<          echo "touch \"\$1\""
+<          echo "patch \"\$1\" <<'EOF'"
+<          echo -n | diff - "$fl"
+<          echo "EOF"
+<          echo "echo 0 # $*") > "$pre$fl.$ext"
+<         echo "committed $fl revision 0"
+<         return
+<     }
+< 
+<     # generate head
+<     tmp="$(mktemp)"
+<     bash "$pre$fl.$ext" "$tmp" head >/dev/null
+---
+>         (
+>             echo "# This is a revision file generated by rvn;"
+>             echo "# you probably don't want to edit it by hand."
+>             echo "[ \"\$1\" ] || exit"
+>             echo "touch \"\$1\""
+>         ) > "$pre$fl.$ext"
+>     fi
+>     v=$(bash "$pre$fl.$ext" "$tmp" head | tail -n 1)
+77,78c72
+<     if cmp -s "$tmp" "$fl"; then
+<         # no changes, no commit
+---
+>     if [[ "$v" != "" ]] && cmp -s "$tmp" "$fl"; then
+81,89c75,86
+<         # get current revision
+<         v=$(tail -n 1 "$pre$fl.$ext" | cut -d" " -f 2)
+<         # commit next revision
+<         (echo "[ \"\$2\" = $v ] && exit"
+<          v=$((v + 1))
+<          echo "patch \"\$1\" <<'EOF'"
+<          diff "$tmp" "$fl"
+<          echo "EOF"
+<          echo "echo $v # $*") >> "$pre$fl.$ext"
+---
+>         if [[ "$v" == "" ]]; then
+>             v=0
+>         else
+>             v=$(($v + 1))
+>         fi
+>         (
+>             echo "patch \"\$1\" <<'EOF'"
+>             diff "$tmp" "$fl"
+>             echo "EOF"
+>             echo "echo $v # $*"
+>             echo "[ \"\$2\" = $v ] && exit"
+>         ) >> "$pre$fl.$ext"
+EOF
+echo 36 # clearer commit() code
+[ "$2" = 36 ] && exit
